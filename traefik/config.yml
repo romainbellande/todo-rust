@@ -1,0 +1,15 @@
+http:
+  routers:
+    traefik:
+      rule: "Host(`traefik.todo.localhost`)"
+      service: "api@internal"
+      tls:
+        domains:
+          - main: "todo.localhost"
+            sans:
+              - "*.todo.localhost"
+
+tls:
+  certificates:
+    - certFile: "/etc/certs/local-cert.pem"
+      keyFile: "/etc/certs/local-key.pem"

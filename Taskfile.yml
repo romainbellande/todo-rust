@@ -1,0 +1,33 @@
+version: '3'
+
+env:
+  MIGRATION_DIR: ./server/migration
+
+tasks:
+  init:
+    cmds:
+      - rustup target add wasm32-unknown-unknown
+  certs:
+    cmds:
+      - mkcert -install
+      - mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem "todo.localhost" "*.todo.localhost"
+
+  "migration:init":
+    cmds:
+      - docker-compose exec api sea-orm-cli migrate init -d ${MIGRATION_DIR}
+
+  "migration:create":
+    cmds:
+      - echo "todo"
+
+  "migration:run":
+    cmds:
+      - docker-compose exec api sea-orm-cli migrate up -d ${MIGRATION_DIR}
+
+  "migration:revert":
+    cmds:
+      - docker-compose exec api sea-orm-cli migrate down -d ${MIGRATION_DIR}
+
+  "client:serve":
+    cmds:
+      - trunk serve --port 8088 ./src/client

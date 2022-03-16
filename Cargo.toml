@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+    "client",
+    "server",
+    "shared"
+]
+
+default-members = ["server"]

@@ -1,0 +1,86 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: "traefik:v2.5"
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.useBindPortIP=true"
+      - "traefik.http.routers.traefik=true"
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=https"
+    ports:
+      - "443:443"
+      - "80:80"
+      - "8080:8080"
+      - "8085:8085"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/config.yml:/etc/traefik/config.yml:ro
+      - ./certs:/etc/certs:ro
+    depends_on:
+      - pg
+      - api
+      - client
+
+  pg:
+    image: "postgres:11"
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DATABASES: "${POSTGRES_DATABASE}"
+    ports:
+      - 5447:5432
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./docker/postgres/pg-init-scripts:/docker-entrypoint-initdb.d
+
+  api:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    user: "${UID}:${GID}"
+    command: bash -c "bash ./scripts/wait-for-it.sh pg:5432 -q && cargo watch -i ~/.cargo -x run"
+    environment:
+      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@pg/${POSTGRES_DATABASE}"
+      CARGO_HOME: "/.cargo"
+    volumes:
+      - ./:/usr/src/app
+      - cargo-dir:/.cargo
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.todo-api.rule=Host(`api.todo.localhost`)"
+      - "traefik.http.routers.todo-api.entrypoints=http,https"
+      - "traefik.http.services.todo-api.loadbalancer.server.port=3001"
+      - "traefik.http.routers.todo-api.tls=true"
+    depends_on:
+      - pg
+
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    user: "${UID}:${GID}"
+    command: bash -c "bash ./scripts/wait-for-it.sh api:3001 -q && trunk serve client/index.html"
+    environment:
+      CARGO_HOME: "/.cargo"
+    volumes:
+      - ./:/usr/src/app
+      - cargo-dir:/.cargo
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.todo.rule=Host(`todo.localhost`)"
+      - "traefik.http.routers.todo.entrypoints=http,https"
+      - "traefik.http.services.todo.loadbalancer.server.port=3001"
+      - "traefik.http.routers.todo.tls=true"
+    depends_on:
+      - api
+
+volumes:
+  pg-data:
+  cargo-dir:
