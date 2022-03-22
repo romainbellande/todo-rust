@@ -12,6 +12,7 @@ path = "src/lib.rs"
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 uuid = { version = "0.8", features = ["serde", "v4"] }
+validator = { version = "0.14", features = ["derive"] }
 
 [dependencies.sea-orm]
 # path = "../../../" # remove this line in your own project

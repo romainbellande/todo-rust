@@ -2,6 +2,8 @@ version: '3'
 
 env:
   MIGRATION_DIR: ./server/migration
+  K6_INSECURE_SKIP_TLS_VERIFY: true
+  K6_DIR: ./server/k6
 
 tasks:
   init:
@@ -31,3 +33,15 @@ tasks:
   "client:serve":
     cmds:
       - trunk serve --port 8088 ./src/client
+
+  "k6:install":
+    cmds:
+      - ./scripts/k6-install.sh
+
+  "k6:run:todo:create":
+    cmds:
+      - k6 run ${K6_DIR}/todo/create.js
+
+  "k6:run:todo:list":
+    cmds:
+      - k6 run ${K6_DIR}/todo/list.js

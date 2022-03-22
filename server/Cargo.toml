@@ -26,3 +26,4 @@ validator = { version = "0.14", features = ["derive"] }
 entity = { path = "./entity" }
 migration = { path = "./migration" }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+crud = { path = "./crud" }
