@@ -1,47 +1,31 @@
 version: '3'
 
-env:
-  MIGRATION_DIR: ./server/migration
-  K6_INSECURE_SKIP_TLS_VERIFY: true
-  K6_DIR: ./server/k6
+includes:
+  server:
+    taskfile: ./server/Taskfile.yml
+    dir: ./server
+  client:
+    taskfile: ./client/Taskfile.yml
+    dir: ./client
 
 tasks:
   init:
     cmds:
       - rustup target add wasm32-unknown-unknown
+      - ./scripts/k6-install.sh
+      - npm install -g tailwindcss concurrently
+      - mkcert -install
+
+  start:
+    deps:
+      - task: client:gen:css:watch
+      - task: start:docker
+
+  "start:docker":
+    cmds:
+      - docker-compose down && docker-compose up
+
   certs:
     cmds:
-      - mkcert -install
       - mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem "todo.localhost" "*.todo.localhost"
 
-  "migration:init":
-    cmds:
-      - docker-compose exec api sea-orm-cli migrate init -d ${MIGRATION_DIR}
-
-  "migration:create":
-    cmds:
-      - echo "todo"
-
-  "migration:run":
-    cmds:
-      - docker-compose exec api sea-orm-cli migrate up -d ${MIGRATION_DIR}
-
-  "migration:revert":
-    cmds:
-      - docker-compose exec api sea-orm-cli migrate down -d ${MIGRATION_DIR}
-
-  "client:serve":
-    cmds:
-      - trunk serve --port 8088 ./src/client
-
-  "k6:install":
-    cmds:
-      - ./scripts/k6-install.sh
-
-  "k6:run:todo:create":
-    cmds:
-      - k6 run ${K6_DIR}/todo/create.js
-
-  "k6:run:todo:list":
-    cmds:
-      - k6 run ${K6_DIR}/todo/list.js

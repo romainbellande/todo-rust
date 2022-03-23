@@ -2,11 +2,12 @@ FROM rust:1-buster
 
 RUN mkdir /.cargo
 
-RUN chmod -R 777 /.cargo
+RUN chown -R ${UID}:${GID} /.cargo && \
+    mkdir -p /usr/src/app && \
+    chown -R ${UID}:${GID} /usr/src/app
 
-RUN cargo install sea-orm-cli
-
-RUN cargo install cargo-watch \
+RUN cargo install sea-orm-cli \
+                  cargo-watch \
                   trunk \
                   wasm-bindgen-cli
 

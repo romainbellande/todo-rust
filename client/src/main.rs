@@ -1,4 +1,7 @@
 use yew::prelude::*;
+use yew::{classes};
+mod app;
+mod router;
 
 enum Msg {
     AddOne,
@@ -34,6 +37,7 @@ impl Component for Model {
         let link = ctx.link();
         html! {
             <div>
+                <p class={classes!("bg-red-100")}>{"Test ok!"}</p>
                 <button onclick={link.callback(|_| Msg::AddOne)}>{ "+1" }</button>
                 <p>{ self.value }</p>
             </div>
@@ -42,5 +46,5 @@ impl Component for Model {
 }
 
 fn main() {
-    yew::start_app::<Model>();
+    yew::start_app::<app::App>();
 }

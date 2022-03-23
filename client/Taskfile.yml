@@ -1,0 +1,21 @@
+version: '3'
+
+tasks:
+  "gen:css":
+    env:
+      NODE_ENV: production
+    sources:
+      - ./src/**/*.rs
+      - ./index.html
+      - ./src/**/*.html
+      - ./src/**/*.css
+    cmds:
+      - tailwindcss -c ./tailwind.config.js -o ./tailwind.css --minify
+
+  "gen:css:watch":
+    cmds:
+      - task --watch "gen:css"
+
+  serve:
+    cmds:
+      - trunk serve --port 8085

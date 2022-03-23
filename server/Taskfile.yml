@@ -1,0 +1,31 @@
+version: '3'
+
+env:
+  MIGRATION_DIR: ./migration
+  K6_INSECURE_SKIP_TLS_VERIFY: true
+  K6_DIR: ./k6
+
+tasks:
+  "mig:init":
+    cmds:
+      - docker-compose exec api sea-orm-cli migrate init -d ${MIGRATION_DIR}
+
+  "mig:create":
+    cmds:
+      - echo "todo"
+
+  "mig:run":
+    cmds:
+      - docker-compose exec api sea-orm-cli migrate up -d ${MIGRATION_DIR}
+
+  "mig:revert":
+    cmds:
+      - docker-compose exec api sea-orm-cli migrate down -d ${MIGRATION_DIR}
+
+  "k6:todo:create":
+    cmds:
+      - k6 run ${K6_DIR}/todo/create.js
+
+  "k6:todo:list":
+    cmds:
+      - k6 run ${K6_DIR}/todo/list.js
