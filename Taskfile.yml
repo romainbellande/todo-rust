@@ -20,6 +20,7 @@ tasks:
     deps:
       - task: client:gen:css:watch
       - task: start:docker
+      - task: client:serve
 
   "start:docker":
     cmds:

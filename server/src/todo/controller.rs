@@ -10,7 +10,7 @@ use crud::controller;
 pub async fn get_paginated_result<'db, T: FromQueryResult>(
     paginator: Paginator<'db, DatabaseConnection, SelectModel<T>>,
     data: Vec<T>
-) -> PaginatedResult<Vec<T>> {
+) -> PaginatedResult<T> {
     let total = paginator.num_pages().await.ok().unwrap();
     let count = paginator.num_items().await.ok().unwrap();
     let page = paginator.cur_page();
@@ -60,7 +60,7 @@ async fn list(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
     let paginated_result = get_paginated_result(paginator, todos).await;
 
     HttpResponse::Ok()
-        .insert_header(("Content-Type", "text/json;charset=UTF-8"))
+        .insert_header(("Content-Type", "application/json"))
         .body(serde_json::json!(paginated_result).to_string())
 }
 

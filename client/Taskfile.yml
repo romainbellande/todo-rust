@@ -18,4 +18,4 @@ tasks:
 
   serve:
     cmds:
-      - trunk serve --port 8085
+      - trunk serve --port 8089

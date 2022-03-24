@@ -46,7 +46,7 @@ pub struct Params {
 
 #[derive(Serialize)]
 pub struct PaginatedResult<T> {
-    pub data: T,
+    pub data: Vec<T>,
     pub count: usize,
     pub total: usize,
     pub page: usize,
