@@ -1,10 +1,10 @@
 #![allow(unused_must_use)]
 
-use serde::{Serialize, Deserialize};
-use sea_orm::{Database, DatabaseConnection, ConnectOptions};
-use migration::{Migrator, MigratorTrait};
-use std::env;
 use actix_web::{web, HttpRequest};
+use migration::{Migrator, MigratorTrait};
+use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use serde::{Deserialize, Serialize};
+use std::env;
 
 const DEFAULT_PAGE: u8 = 1;
 const DEFAULT_LIMIT: u8 = 20;
@@ -20,7 +20,7 @@ pub fn setup_logs() {
 }
 
 pub async fn setup_database() -> DatabaseConnection {
-    let database_url= env::var("DATABASE_URL").expect("DATABASE_URL is not set");
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set");
 
     log::info!("linking database...");
 
@@ -28,7 +28,9 @@ pub async fn setup_database() -> DatabaseConnection {
 
     conn_options.sqlx_logging(false);
 
-    let db: DatabaseConnection = Database::connect(conn_options).await.expect("can't connect to database");
+    let db: DatabaseConnection = Database::connect(conn_options)
+        .await
+        .expect("can't connect to database");
 
     Migrator::up(&db, None).await.unwrap();
 
@@ -60,21 +62,21 @@ pub fn get_params_from_request(req: &HttpRequest) -> web::Query<Params> {
 pub fn get_page_from_request(req: &HttpRequest) -> usize {
     let params = get_params_from_request(req);
 
-    return if params.page.is_some() {
+    if params.page.is_some() {
         params.page.unwrap()
     } else {
         DEFAULT_PAGE.into()
-    };
+    }
 }
 
 pub fn get_limit_from_request(req: &HttpRequest) -> usize {
     let params = get_params_from_request(req);
 
-    return if params.limit.is_some() {
+    if params.limit.is_some() {
         params.limit.unwrap()
     } else {
         DEFAULT_LIMIT.into()
-    };
+    }
 }
 
 pub fn get_search_from_request(req: &HttpRequest) -> String {

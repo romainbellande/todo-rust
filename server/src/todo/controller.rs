@@ -1,15 +1,20 @@
 use actix_web::{web, HttpRequest, HttpResponse, Responder, Scope};
 extern crate entity;
-use entity::todo::{Entity as Todo, self};
-use entity::utils::{ColumnFinder, get_expr};
-use sea_orm::{entity::*, query::*, Paginator, DatabaseConnection, EntityTrait, SelectModel, FromQueryResult};
-use server::{AppState, PaginatedResult, get_page_from_request, get_limit_from_request, get_search_from_request};
 use super::service;
 use crud::controller;
+use entity::todo::{self, Entity as Todo};
+use entity::utils::{get_expr, ColumnFinder};
+use sea_orm::{
+    entity::*, query::*, DatabaseConnection, EntityTrait, FromQueryResult, Paginator, SelectModel,
+};
+use server::{
+    get_limit_from_request, get_page_from_request, get_search_from_request, AppState,
+    PaginatedResult,
+};
 
 pub async fn get_paginated_result<'db, T: FromQueryResult>(
     paginator: Paginator<'db, DatabaseConnection, SelectModel<T>>,
-    data: Vec<T>
+    data: Vec<T>,
 ) -> PaginatedResult<T> {
     let total = paginator.num_pages().await.ok().unwrap();
     let count = paginator.num_items().await.ok().unwrap();
@@ -47,7 +52,6 @@ async fn list(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
                 finder = finder.filter(expr.unwrap());
             }
         }
-
     }
 
     let paginator = finder.paginate(db, limit);
@@ -70,7 +74,7 @@ async fn create(data: web::Data<AppState>, todo_dto: web::Json<todo::Model>) -> 
 }
 
 pub fn controller() -> Scope {
-    return web::scope("/todos")
+    web::scope("/todos")
         .route("", web::get().to(list))
-        .route("", web::post().to(create));
+        .route("", web::post().to(create))
 }

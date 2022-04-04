@@ -1,11 +1,11 @@
-use yew::{classes, function_component, html};
-use components::side_nav::SideNav;
+use crate::router::{switch, Route};
 use components::header::Header;
+use components::side_nav::SideNav;
+use yew::{classes, function_component, html};
 use yew_router::prelude::*;
-use crate::router::{Route, switch};
 
-pub mod home;
 mod components;
+pub mod home;
 
 #[function_component(App)]
 pub fn app() -> Html {

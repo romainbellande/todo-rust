@@ -1,4 +1,4 @@
-use serde::{Deserialize};
+use serde::Deserialize;
 
 #[derive(Clone, PartialEq, Deserialize, Debug)]
 pub struct Todo {

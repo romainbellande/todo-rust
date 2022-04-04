@@ -1,7 +1,7 @@
-use actix_web::{web, App, HttpServer, middleware::Logger};
+use actix_web::{middleware::Logger, web, App, HttpServer};
 mod todo;
-use server::{AppState, setup_database, setup_logs};
 use actix_cors::Cors;
+use server::{setup_database, setup_logs, AppState};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -12,21 +12,15 @@ async fn main() -> std::io::Result<()> {
     let state: AppState = AppState { db };
 
     HttpServer::new(move || {
-
-        let cors = Cors::default()
-            .allow_any_origin()
-            .send_wildcard(); // only dev
+        let cors = Cors::default().allow_any_origin().send_wildcard(); // only dev
 
         App::new()
             .wrap(cors)
             .wrap(Logger::new("%r %U [%D ms][%s]"))
             .app_data(web::Data::new(state.clone()))
-            .service(
-        web::scope("/api/v1")
-                    .service(todo::controller::controller())
-            )
+            .service(web::scope("/api/v1").service(todo::controller::controller()))
     })
-        .bind("0.0.0.0:3001")?
-        .run()
-        .await
+    .bind("0.0.0.0:3001")?
+    .run()
+    .await
 }

@@ -1,7 +1,7 @@
-use yew::{classes, html};
-use yew_router::prelude::*;
 use crate::router::Route;
 use stylist::yew::styled_component;
+use yew::{classes, html};
+use yew_router::prelude::*;
 
 #[styled_component(SideNav)]
 pub fn side_nav() -> Html {
