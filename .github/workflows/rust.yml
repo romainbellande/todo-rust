@@ -1,0 +1,32 @@
+name: rust
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        folder:
+          - client
+          - server
+          - server/crud
+          - server/entity
+          - server/migration
+
+    steps:
+        - uses: actions/checkout@v2
+        - uses: actions-rs/toolchain@v1
+          with:
+            toolchain: nightly
+            override: true
+            components: rustfmt, clippy
+        - name: check format
+          run: cd ${{ matrix.folder }} && cargo fmt -- --check
+        - name: check lint
+          run: cd ${{ matrix.folder }} && cargo clippy && cargo test

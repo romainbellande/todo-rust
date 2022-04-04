@@ -1,8 +1,8 @@
+use super::utils::ColumnFinder;
 use sea_orm::{entity::prelude::*, Set};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use super::utils::ColumnFinder;
-use validator::{Validate};
+use validator::Validate;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Deserialize, Serialize, Validate)]
 #[sea_orm(table_name = "todo")]
@@ -31,12 +31,8 @@ impl ActiveModelBehavior for ActiveModel {
 impl ColumnFinder<Column> for Column {
     fn find_col_by_name(col_name: &str) -> Option<Column> {
         match col_name {
-            "name" => {
-                Some(Self::Name)
-            },
+            "name" => Some(Self::Name),
             _ => None,
         }
     }
 }
-
-

@@ -1,12 +1,7 @@
-use sea_schema::migration::{
-    sea_query::{*},
-    *,
-};
+use sea_schema::migration::{sea_query::*, *};
 
 use entity::todo::Entity as Todo;
-use sea_orm::{Schema, DbBackend};
-
-
+use sea_orm::{DbBackend, Schema};
 
 pub struct Migration;
 
@@ -28,6 +23,8 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        manager.drop_table(Table::drop().table(Todo).to_owned()).await
+        manager
+            .drop_table(Table::drop().table(Todo).to_owned())
+            .await
     }
 }

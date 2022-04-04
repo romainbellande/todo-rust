@@ -1,10 +1,13 @@
-use actix_web::{HttpResponse, Responder, HttpResponseBuilder};
-use serde::Serialize;
 use crate::web_error::WebError;
+use actix_web::{HttpResponse, HttpResponseBuilder, Responder};
+use serde::Serialize;
 
 const DEFAULT_HEADER: (&str, &str) = ("Content-Type", "text/json;charset=UTF-8");
 
-pub fn handle_success<Model: Serialize>(mut builder: HttpResponseBuilder, data: Model) -> HttpResponse {
+pub fn handle_success<Model: Serialize>(
+    mut builder: HttpResponseBuilder,
+    data: Model,
+) -> HttpResponse {
     builder
         .insert_header(DEFAULT_HEADER)
         .body(serde_json::json!(data).to_string())
@@ -17,8 +20,8 @@ pub fn handle_error(err: WebError) -> HttpResponse {
 }
 
 pub fn create<Model: Serialize>(result: Result<Model, WebError>) -> impl Responder {
-  match result {
-    Ok(data) => handle_success::<Model>(HttpResponse::Created(), data),
-    Err(err) => handle_error(err)
-  }
+    match result {
+        Ok(data) => handle_success::<Model>(HttpResponse::Created(), data),
+        Err(err) => handle_error(err),
+    }
 }

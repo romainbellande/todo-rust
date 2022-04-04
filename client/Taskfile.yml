@@ -1,13 +1,30 @@
 version: '3'
 
+includes:
+  shared:
+    taskfile: ../SharedTaskfile.yml
+    dir: ./
+
 tasks:
+  check:
+    cmds:
+      - task: shared:check
+
+  test:
+    cmds:
+      - task: shared:test
+
+  lint:
+    cmds:
+      - task: shared:lint
+
   "lint:fix":
     cmds:
-      - cargo clippy --fix --allow-dirty
+      - task: shared:lint:fix
 
   format:
     cmds:
-      - cargo fmt
+      - task: shared:format
 
   "gen:css":
     env:

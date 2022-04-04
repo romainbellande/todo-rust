@@ -1,0 +1,22 @@
+version: '3'
+
+tasks:
+  check:
+    cmds:
+      - cargo check
+
+  lint:
+    cmds:
+      - cargo clippy
+
+  "lint:fix":
+    cmds:
+      - cargo clippy --fix --allow-dirty
+
+  format:
+    cmds:
+      - cargo +nightly fmt
+
+  test:
+    cmds:
+      - cargo test

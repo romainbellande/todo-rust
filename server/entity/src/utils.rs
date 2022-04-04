@@ -1,9 +1,8 @@
-use sea_orm::{ColumnTrait, sea_query::SimpleExpr};
+use sea_orm::{sea_query::SimpleExpr, ColumnTrait};
 
 pub trait ColumnFinder<T: ColumnTrait> {
-  fn find_col_by_name(col_name: &str) -> Option<T>;
+    fn find_col_by_name(col_name: &str) -> Option<T>;
 }
-
 
 // $eq (=, equal)
 // $ne (!=, not equal)
@@ -30,10 +29,8 @@ pub trait ColumnFinder<T: ColumnTrait> {
 // $notinL (LOWER(field) NOT IN, not in range, accepts multiple values)
 
 pub fn get_expr<T: ColumnTrait>(col: T, filter_condition: &str, value: &str) -> Option<SimpleExpr> {
-  match filter_condition {
-    "$cont" => {
-      Some(col.contains(value))
-    },
-    _ => None,
-  }
+    match filter_condition {
+        "$cont" => Some(col.contains(value)),
+        _ => None,
+    }
 }
