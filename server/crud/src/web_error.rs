@@ -32,14 +32,14 @@ impl WebError {
 
 #[cfg(test)]
 mod tests {
-    use crate::web_error::{WebError, FormattedWebError};
+    use crate::web_error::{FormattedWebError, WebError};
     use actix_web::http::StatusCode;
 
     #[test]
     fn format_web_error_with_known_status() {
         let err = WebError {
             code: StatusCode::NOT_FOUND,
-            message: String::from("user not found")
+            message: String::from("user not found"),
         };
 
         let expected_err = FormattedWebError {
@@ -55,7 +55,7 @@ mod tests {
     fn format_web_error_with_unknown_status() {
         let err = WebError {
             code: StatusCode::from_u16(103).unwrap(),
-            message: String::from("Early Hints")
+            message: String::from("Early Hints"),
         };
 
         let expected_err = FormattedWebError {
