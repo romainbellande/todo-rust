@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         folder:
@@ -18,9 +19,11 @@ jobs:
           - server/entity
           - server/migration
 
-  steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - run: cd ${{ matrix.folder }} && cargo fmt -- --check && cargo clippy && cargo test
+    steps:
+        - uses: actions/checkout@v2
+        - uses: actions-rs/toolchain@v1
+          with:
+            toolchain: nightly
+            override: true
+            components: rustfmt, clippy
+        - run: cd ${{ matrix.folder }} && cargo fmt -- --check && cargo clippy && cargo test
