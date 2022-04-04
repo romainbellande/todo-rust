@@ -6,6 +6,14 @@ env:
   K6_DIR: ./k6
 
 tasks:
+  "lint:fix":
+    cmds:
+      - cargo clippy --fix --allow-dirty
+
+  format:
+    cmds:
+      - cargo fmt
+
   "mig:init":
     cmds:
       - docker-compose exec api sea-orm-cli migrate init -d ${MIGRATION_DIR}

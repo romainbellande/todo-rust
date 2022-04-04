@@ -27,3 +27,4 @@ entity = { path = "./entity" }
 migration = { path = "./migration" }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 crud = { path = "./crud" }
+actix-cors = "0.6"

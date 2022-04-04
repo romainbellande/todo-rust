@@ -1,6 +1,14 @@
 version: '3'
 
 tasks:
+  "lint:fix":
+    cmds:
+      - cargo clippy --fix --allow-dirty
+
+  format:
+    cmds:
+      - cargo fmt
+
   "gen:css":
     env:
       NODE_ENV: production
@@ -18,4 +26,4 @@ tasks:
 
   serve:
     cmds:
-      - trunk serve --port 8085
+      - trunk serve --port 8089

@@ -20,6 +20,17 @@ tasks:
     deps:
       - task: client:gen:css:watch
       - task: start:docker
+      - task: client:serve
+
+  "lint:fix":
+    deps:
+      - task: client:lint:fix
+      - task: server:lint:fix
+
+  "format":
+    deps:
+      - task: client:format
+      - task: server:format
 
   "start:docker":
     cmds:

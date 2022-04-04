@@ -1,7 +1,9 @@
-use yew::prelude::*;
-use yew::{classes};
 mod app;
+mod entities;
 mod router;
+
+use yew::classes;
+use yew::prelude::*;
 
 enum Msg {
     AddOne,
@@ -16,9 +18,7 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            value: 0,
-        }
+        Self { value: 0 }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
@@ -46,5 +46,6 @@ impl Component for Model {
 }
 
 fn main() {
+    wasm_logger::init(wasm_logger::Config::default());
     yew::start_app::<app::App>();
 }

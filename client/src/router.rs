@@ -1,6 +1,6 @@
+use crate::app::home::Home;
 use yew::prelude::*;
 use yew_router::prelude::*;
-use crate::app::home::Home;
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
