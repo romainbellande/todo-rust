@@ -5,14 +5,55 @@ env:
   K6_INSECURE_SKIP_TLS_VERIFY: true
   K6_DIR: ./k6
 
+includes:
+  shared:
+    taskfile: ../SharedTaskfile.yml
+    dir: ./
+  crud:
+    taskfile: ../SharedTaskfile.yml
+    dir: ./crud
+  entity:
+    taskfile: ../SharedTaskfile.yml
+    dir: ./entity
+  migration:
+    taskfile: ../SharedTaskfile.yml
+    dir: ./migration
+
 tasks:
+  check:
+    cmds:
+      - task: shared:check
+      - task: crud:check
+      - task: entity:check
+      - task: migration:check
+
+  test:
+    cmds:
+      - task: shared:test
+      - task: crud:test
+      - task: entity:test
+      - task: migration:test
+
+  lint:
+    cmds:
+      - task: shared:lint
+      - task: crud:lint
+      - task: entity:lint
+      - task: migration:lint
+
   "lint:fix":
     cmds:
-      - cargo clippy --fix --allow-dirty
+      - task: shared:lint:fix
+      - task: crud:lint:fix
+      - task: entity:lint:fix
+      - task: migration:lint:fix
 
   format:
     cmds:
-      - cargo fmt
+      - task: shared:format
+      - task: crud:format
+      - task: entity:format
+      - task: migration:format
 
   "mig:init":
     cmds:

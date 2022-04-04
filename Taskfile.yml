@@ -22,13 +22,28 @@ tasks:
       - task: start:docker
       - task: client:serve
 
+  check:
+    cmds:
+      - task: client:check
+      - task: server:check
+
+  test:
+    cmds:
+      - task: client:test
+      - task: server:test
+
+  "lint":
+    cmds:
+      - task: client:lint:fix
+      - task: server:lint:fix
+
   "lint:fix":
-    deps:
+    cmds:
       - task: client:lint:fix
       - task: server:lint:fix
 
   "format":
-    deps:
+    cmds:
       - task: client:format
       - task: server:format
 
